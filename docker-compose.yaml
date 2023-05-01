@@ -14,16 +14,22 @@ services:
     depends_on:
       - mongo-dev
       - redis-dev
+    networks:
+      - users-network
   mongo-dev:
     container_name: mongo-dev
     image: mongo
     restart: always
     environment:
-      - AD
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
     ports:
       - 27017:27017
     volumes:
       - ./.docker/mongo/data:/home/node/backend/databases/mongo/data
+    networks:
+      - users-network
   redis-dev:
     container_name: redis-dev
     image: redis
@@ -32,3 +38,7 @@ services:
       - 6379:6379
     volumes:
       - ./.docker/redis/data:/home/node/backend/databases/redis/data
+
+networks:
+  users-network:
+    driver: bridge
