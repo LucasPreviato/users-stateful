@@ -1,0 +1,34 @@
+version: '3.9'
+services:
+  users:
+    container_name: users-stateful
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/home/node/backend/users-stateful
+      - ./.docker/zsh/powerlevel10k/.p10k.zsh:/home/node/.p10k.zsh:delegated
+      - ./.docker/zsh/history:/home/node/zsh:delegated
+    depends_on:
+      - mongo-dev
+      - redis-dev
+  mongo-dev:
+    container_name: mongo-dev
+    image: mongo
+    restart: always
+    environment:
+      - AD
+    ports:
+      - 27017:27017
+    volumes:
+      - ./.docker/mongo/data:/home/node/backend/databases/mongo/data
+  redis-dev:
+    container_name: redis-dev
+    image: redis
+    restart: always
+    ports:
+      - 6379:6379
+    volumes:
+      - ./.docker/redis/data:/home/node/backend/databases/redis/data
